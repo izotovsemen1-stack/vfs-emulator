@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext, messagebox
 import shlex
+import time
 from vfs.vfs_manager import VFSManager
 
 class ShellGUI:
@@ -10,6 +11,9 @@ class ShellGUI:
         self.root.title(title)
         self.root.geometry("700x400")
 
+        self.start_time = time.time()  # Для uptime
+        self.username = "user"         # Для whoami
+
         self.text_area = scrolledtext.ScrolledText(self.root, wrap=tk.WORD, state='disabled')
         self.text_area.pack(expand=True, fill='both')
 
@@ -17,7 +21,8 @@ class ShellGUI:
         self.entry.pack(fill='x')
         self.entry.bind("<Return>", self.process_command)
 
-        self.append_output("Welcome to VFS Emulator!\nType 'help' or 'exit' to quit.\n")
+        self.append_output("Welcome to VFS Emulator!")
+        self.append_output("Type 'help' or 'exit' to quit.\n")
 
     def append_output(self, text):
         self.text_area.configure(state='normal')
@@ -43,7 +48,12 @@ class ShellGUI:
 
             elif cmd == "ls":
                 items = self.vfs.list_dir()
-                self.append_output("\n".join(items) if items else "(empty)")
+                if not items:
+                    self.append_output("(empty)")
+                else:
+                    # выводим по колонкам
+                    formatted = "  ".join(items)
+                    self.append_output(formatted)
 
             elif cmd == "cd":
                 if not args:
@@ -51,11 +61,29 @@ class ShellGUI:
                 self.vfs.change_dir(args[0])
                 self.append_output(f"Changed directory to {self.vfs.get_current_path()}")
 
-            elif cmd == "mkdir":
-                if not args:
-                    raise ValueError("Usage: mkdir <name>")
-                self.vfs.make_dir(args[0])
-                self.append_output(f"Created directory: {args[0]}")
+            elif cmd == "pwd":
+                self.append_output(self.vfs.get_current_path())
+
+            elif cmd == "whoami":
+                self.append_output(self.username)
+
+            elif cmd == "uptime":
+                elapsed = time.time() - self.start_time
+                minutes, seconds = divmod(int(elapsed), 60)
+                self.append_output(f"Uptime: {minutes}m {seconds}s")
+
+            elif cmd == "help":
+                self.append_output(
+                    "Available commands:\n"
+                    "  ls          - list directory contents\n"
+                    "  cd <dir>    - change directory\n"
+                    "  pwd         - print working directory\n"
+                    "  whoami      - show current user\n"
+                    "  uptime      - show time since start\n"
+                    "  mkdir <n>   - create directory\n"
+                    "  vfs-save [p]- save current VFS\n"
+                    "  exit        - quit emulator"
+                )
 
             elif cmd == "vfs-save":
                 path = args[0] if args else None

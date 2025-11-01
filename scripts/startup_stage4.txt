@@ -1,0 +1,11 @@
+# Демонстрация команд 4 этапа
+whoami
+uptime
+pwd
+ls
+mkdir test
+cd test
+pwd
+cd ..
+vfs-save
+exit
