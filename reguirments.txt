@@ -1,0 +1,10 @@
+# ==========================
+# VFS Emulator dependencies
+# ==========================
+
+# All required modules are included in Python 3.8+
+# Tkinter is part of standard library, except on minimal Linux installs
+# To install Tkinter manually (if missing):
+#     sudo apt install python3-tk
+
+python_version >= "3.8"

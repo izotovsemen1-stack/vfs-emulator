@@ -1,0 +1,21 @@
+{
+    "name": "/",
+    "type": "dir",
+    "children": [
+        {
+            "name": "Documents",
+            "type": "dir",
+            "children": []
+        },
+        {
+            "name": "Downloads",
+            "type": "dir",
+            "children": []
+        },
+        {
+            "name": "Music",
+            "type": "dir",
+            "children": []
+        }
+    ]
+}

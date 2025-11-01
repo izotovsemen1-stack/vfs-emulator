@@ -1,8 +1,11 @@
 import tkinter as tk
 from tkinter import scrolledtext, messagebox
+import shlex
+from vfs.vfs_manager import VFSManager
 
 class ShellGUI:
-    def __init__(self, title="VFS Emulator"):
+    def __init__(self, title="VFS Emulator", vfs_path=None):
+        self.vfs = VFSManager(vfs_path)
         self.root = tk.Tk()
         self.root.title(title)
         self.root.geometry("700x400")
@@ -26,7 +29,6 @@ class ShellGUI:
         cmd_input = command if command else self.entry.get().strip()
         if not cmd_input:
             return
-
         self.append_output(f"> {cmd_input}")
         self.entry.delete(0, tk.END)
 
@@ -38,17 +40,35 @@ class ShellGUI:
             if cmd == "exit":
                 self.append_output("Exiting...")
                 self.root.quit()
+
             elif cmd == "ls":
-                self.append_output(f"[LS] Arguments: {args}")
+                items = self.vfs.list_dir()
+                self.append_output("\n".join(items) if items else "(empty)")
+
             elif cmd == "cd":
-                self.append_output(f"[CD] Arguments: {args}")
+                if not args:
+                    raise ValueError("Usage: cd <directory>")
+                self.vfs.change_dir(args[0])
+                self.append_output(f"Changed directory to {self.vfs.get_current_path()}")
+
+            elif cmd == "mkdir":
+                if not args:
+                    raise ValueError("Usage: mkdir <name>")
+                self.vfs.make_dir(args[0])
+                self.append_output(f"Created directory: {args[0]}")
+
+            elif cmd == "vfs-save":
+                path = args[0] if args else None
+                saved_to = self.vfs.save(path)
+                self.append_output(f"VFS saved to {saved_to}")
+
             else:
                 self.append_output(f"Unknown command: {cmd}")
+
         except Exception as e:
             self.append_output(f"Error: {e}")
 
     def _parse_command(self, command_str):
-        import shlex
         return shlex.split(command_str)
 
     def run_script(self, script_path):

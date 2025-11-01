@@ -3,7 +3,7 @@ from repl_gui import ShellGUI
 
 def main():
     args = parse_arguments()
-    app = ShellGUI(title="VFS Emulator")
+    app = ShellGUI(title="VFS Emulator", vfs_path=args.vfs)
 
     if args.script:
         app.append_output(f"[INFO] Running startup script: {args.script}")
