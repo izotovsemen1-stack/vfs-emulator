@@ -1,16 +1,15 @@
-# This is a sample Python script.
+from config import parse_arguments
+from repl_gui import ShellGUI
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+def main():
+    args = parse_arguments()
+    app = ShellGUI(title="VFS Emulator")
 
+    if args.script:
+        app.append_output(f"[INFO] Running startup script: {args.script}")
+        app.run_script(args.script)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+    app.start()
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    main()

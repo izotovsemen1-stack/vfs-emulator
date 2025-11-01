@@ -1,0 +1,5 @@
+# This is a startup script
+ls
+cd "My Documents"
+unknown_command
+exit
