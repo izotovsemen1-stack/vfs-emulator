@@ -1,0 +1,15 @@
+pwd
+mkdir test
+mkdir inner
+cd inner
+mkdir temp
+cd ..
+ls
+rmdir inner
+# should fail because inner not empty
+cd inner
+rmdir temp
+cd ..
+rmdir inner
+ls
+exit

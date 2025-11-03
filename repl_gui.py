@@ -11,8 +11,8 @@ class ShellGUI:
         self.root.title(title)
         self.root.geometry("700x400")
 
-        self.start_time = time.time()  # Для uptime
-        self.username = "user"         # Для whoami
+        self.start_time = time.time()
+        self.username = "user"
 
         self.text_area = scrolledtext.ScrolledText(self.root, wrap=tk.WORD, state='disabled')
         self.text_area.pack(expand=True, fill='both')
@@ -48,18 +48,25 @@ class ShellGUI:
 
             elif cmd == "ls":
                 items = self.vfs.list_dir()
-                if not items:
-                    self.append_output("(empty)")
-                else:
-                    # выводим по колонкам
-                    formatted = "  ".join(items)
-                    self.append_output(formatted)
+                self.append_output("(empty)" if not items else "  ".join(items))
 
             elif cmd == "cd":
                 if not args:
                     raise ValueError("Usage: cd <directory>")
                 self.vfs.change_dir(args[0])
                 self.append_output(f"Changed directory to {self.vfs.get_current_path()}")
+
+            elif cmd == "mkdir":
+                if not args:
+                    raise ValueError("Usage: mkdir <directory>")
+                self.vfs.make_dir(args[0])
+                self.append_output(f"Created directory: {args[0]}")
+
+            elif cmd == "rmdir":
+                if not args:
+                    raise ValueError("Usage: rmdir <directory>")
+                self.vfs.remove_dir(args[0])
+                self.append_output(f"Removed directory: {args[0]}")
 
             elif cmd == "pwd":
                 self.append_output(self.vfs.get_current_path())
@@ -72,23 +79,24 @@ class ShellGUI:
                 minutes, seconds = divmod(int(elapsed), 60)
                 self.append_output(f"Uptime: {minutes}m {seconds}s")
 
+            elif cmd == "vfs-save":
+                path = args[0] if args else None
+                saved_to = self.vfs.save(path)
+                self.append_output(f"VFS saved to {saved_to}")
+
             elif cmd == "help":
                 self.append_output(
                     "Available commands:\n"
                     "  ls          - list directory contents\n"
                     "  cd <dir>    - change directory\n"
+                    "  mkdir <n>   - create directory\n"
+                    "  rmdir <n>   - remove empty directory\n"
                     "  pwd         - print working directory\n"
                     "  whoami      - show current user\n"
                     "  uptime      - show time since start\n"
-                    "  mkdir <n>   - create directory\n"
                     "  vfs-save [p]- save current VFS\n"
                     "  exit        - quit emulator"
                 )
-
-            elif cmd == "vfs-save":
-                path = args[0] if args else None
-                saved_to = self.vfs.save(path)
-                self.append_output(f"VFS saved to {saved_to}")
 
             else:
                 self.append_output(f"Unknown command: {cmd}")
