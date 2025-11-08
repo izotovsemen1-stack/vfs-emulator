@@ -1,0 +1,11 @@
+{
+    "name": "/",
+    "type": "dir",
+    "children": [
+        {
+            "name": "projects",
+            "type": "dir",
+            "children": []
+        }
+    ]
+}

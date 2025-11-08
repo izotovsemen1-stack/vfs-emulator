@@ -1,15 +1,13 @@
+whoami
 pwd
+mkdir projects
+cd projects
 mkdir test
-mkdir inner
-cd inner
-mkdir temp
-cd ..
+cd test
+pwd
 ls
-rmdir inner
-# should fail because inner not empty
-cd inner
-rmdir temp
 cd ..
-rmdir inner
+rmdir test
 ls
+vfs-save saved_vfs.json
 exit
